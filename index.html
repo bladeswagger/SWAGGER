@@ -1,1 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SWAGGER Album Countdown</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
+    .container {
+      max-width: 600px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .countdown {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+
+    .time-box {
+      display: inline-block;
+      margin: 10px;
+    }
+
+    .number {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    .label {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    a.button {
+      display: inline-block;
+      padding: 15px 30px;
+      background: white;
+      color: black;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 10px;
+      transition: 0.2s;
+    }
+
+    a.button:hover {
+      background: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>SWAGGER ALBUM DROPPING IN:</h1>
+
+    <div class="countdown">
+      <div class="time-box">
+        <div id="days" class="number">0</div>
+        <div class="label">DAYS</div>
+      </div>
+      <div class="time-box">
+        <div id="hours" class="number">0</div>
+        <div class="label">HOURS</div>
+      </div>
+      <div class="time-box">
+        <div id="minutes" class="number">0</div>
+        <div class="label">MINUTES</div>
+      </div>
+      <div class="time-box">
+        <div id="seconds" class="number">0</div>
+        <div class="label">SECONDS</div>
+      </div>
+    </div>
+
+    <h2>PRESAVE ALBUM:</h2>
+
+    <a class="button" href="https://distrokid.com/hyperfollow/bladeswagger/swagger-3" target="_blank">
+      PRESAVE NOW
+    </a>
+  </div>
+
+  <script>
+    // SET RELEASE DATE (April 17, 00:00)
+    const releaseDate = new Date("April 17, 2026 00:00:00").getTime();
+
+    const countdown = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = releaseDate - now;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / 1000 / 60) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      document.getElementById("days").innerText = days;
+      document.getElementById("hours").innerText = hours;
+      document.getElementById("minutes").innerText = minutes;
+      document.getElementById("seconds").innerText = seconds;
+
+      if (distance < 0) {
+        clearInterval(countdown);
+        document.querySelector(".countdown").innerHTML = "OUT NOW 🔥";
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>
