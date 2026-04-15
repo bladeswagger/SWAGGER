@@ -1,121 +1,558 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SWAGGER Album Countdown</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>BLADESWAGGER · SWAGGER</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none; /* gives that raw, kiosk-like feel */
+    }
+
     body {
-      background: black;
-      color: white;
-      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      background: #000000;
+      background-image: repeating-linear-gradient(0deg, rgba(10,10,15,0.4) 0px, rgba(10,10,15,0.4) 1px, transparent 1px, transparent 2px),
+                        radial-gradient(circle at 30% 10%, #0a0a0f 0%, #010101 95%);
+      font-family: 'Inter', 'SF Mono', 'Fira Code', system-ui, -apple-system, monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #edeff7;
+      padding: 1.2rem;
+      position: relative;
+    }
+
+    /* main capsule — raw concrete & glass fusion */
+    .drop-core {
+      max-width: 860px;
+      width: 100%;
+      background: rgba(2, 2, 5, 0.82);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 3rem;
+      padding: 2.6rem 2rem 2rem;
+      box-shadow: 0 30px 45px -20px black, inset 0 1px 0 rgba(255,255,255,0.02);
+      transition: border 0.2s;
       text-align: center;
+    }
+
+    .drop-core:hover {
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    /* glitch / raw tag */
+    .raw-tag {
+      font-size: 0.65rem;
+      letter-spacing: 3.5px;
+      font-weight: 450;
+      text-transform: uppercase;
+      color: #8f92a8;
+      background: rgba(12,12,18,0.7);
+      display: inline-block;
+      padding: 0.25rem 1.1rem;
+      border-radius: 40px;
+      margin-bottom: 1.8rem;
+      border: 0.5px solid rgba(255,255,255,0.06);
+      font-family: monospace;
+    }
+
+    .main-title {
+      font-size: clamp(2.2rem, 10vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      background: linear-gradient(130deg, #ffffff 25%, #bcbcdb 75%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 12px rgba(255,255,200,0.08);
+    }
+
+    .timezone-info {
+      font-size: 0.7rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #7b7e94;
+      background: rgba(0,0,0,0.4);
+      display: inline-block;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      margin-top: 0.3rem;
+      margin-bottom: 1.2rem;
+      border-left: 2px solid #ffffff30;
+    }
+
+    /* countdown — cold & sharp */
+    .timer-grid {
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      margin: 2.8rem 0 2rem;
     }
 
-    .container {
-      max-width: 600px;
+    .timer-cell {
+      background: #030305dd;
+      backdrop-filter: blur(12px);
+      border-radius: 1.8rem;
+      padding: 1rem 0rem;
+      min-width: 100px;
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: all 0.2s ease;
+      box-shadow: 0 12px 22px -12px black;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
+    .timer-cell:hover {
+      border-color: rgba(255,255,255,0.25);
+      transform: translateY(-4px);
+      background: #08080fe6;
     }
 
-    .countdown {
-      font-size: 2rem;
-      margin-bottom: 30px;
+    .digit {
+      font-size: clamp(2.6rem, 9vw, 4.8rem);
+      font-weight: 800;
+      font-family: 'Inter', 'SF Mono', monospace;
+      letter-spacing: 6px;
+      background: linear-gradient(145deg, #fafaff, #c2c2dc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1;
     }
 
-    .time-box {
-      display: inline-block;
-      margin: 10px;
+    .unit-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      color: #9ea1b5;
+      margin-top: 10px;
     }
 
-    .number {
-      font-size: 2.5rem;
-      font-weight: bold;
+    /* PRESAVE BUTTON — industrial / rough hover */
+    .presave-raw {
+      background: rgba(8, 8, 12, 0.9);
+      border: 1.2px solid rgba(255, 255, 255, 0.18);
+      padding: 0.9rem 2.8rem;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #f0f3ff;
+      border-radius: 60px;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      transition: 0.2s;
+      margin-top: 0.5rem;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+      font-family: inherit;
     }
 
-    .label {
-      font-size: 0.9rem;
+    .presave-raw:hover {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+      transform: scale(0.97);
+      letter-spacing: 4px;
+      box-shadow: 0 0 16px rgba(255,255,240,0.2);
+    }
+
+    /* footer 2026 + signature */
+    .footer-signature {
+      margin-top: 2.2rem;
+      font-size: 0.7rem;
+      font-weight: 450;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      color: #5a5d72;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding-top: 1.2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .footer-signature span {
       opacity: 0.7;
+      font-family: monospace;
     }
 
-    a.button {
-      display: inline-block;
-      padding: 15px 30px;
-      background: white;
-      color: black;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 10px;
+    /* tracklist button — clean, no emoji, edgy */
+    .tracklist-trigger {
+      position: fixed;
+      top: 1.8rem;
+      right: 2rem;
+      z-index: 1000;
+      background: rgba(4, 4, 8, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.6rem 1.7rem;
+      border-radius: 40px;
+      font-weight: 550;
+      font-size: 0.8rem;
+      letter-spacing: 1.6px;
+      color: #e2e6f5;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: inherit;
+      text-transform: uppercase;
+    }
+
+    .tracklist-trigger:hover {
+      background: #1a1a28;
+      border-color: rgba(255,255,255,0.5);
+      color: white;
+      letter-spacing: 2px;
+    }
+
+    /* SLIDE-OUT PANEL — dark, sharp */
+    .slide-panel {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      max-width: 380px;
+      height: 100vh;
+      background: #020206f5;
+      backdrop-filter: blur(28px);
+      background: linear-gradient(125deg, #07070e 0%, #000000 100%);
+      border-left: 1px solid rgba(255,255,255,0.07);
+      z-index: 1100;
+      transition: right 0.45s cubic-bezier(0.2, 0.95, 0.3, 1.05);
+      box-shadow: -10px 0 32px rgba(0,0,0,0.9);
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .slide-panel.open {
+      right: 0;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .panel-head h4 {
+      font-size: 1.65rem;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      background: linear-gradient(135deg, #ffffff, #b0b0ca);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .close-x {
+      background: rgba(255,255,255,0.03);
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #b9bcd0;
+      width: 38px;
+      height: 38px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: 0.2s;
     }
 
-    a.button:hover {
-      background: #ccc;
+    .close-x:hover {
+      background: #2a2a3c;
+      color: white;
+      transform: rotate(90deg);
+    }
+
+    .tracklist-raw {
+      list-style: none;
+      margin-top: 0;
+    }
+
+    .track {
+      font-family: 'Inter', monospace;
+      padding: 0.9rem 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      gap: 1rem;
+      font-size: 1rem;
+      font-weight: 450;
+      transition: 0.2s;
+      color: #e6eaf5;
+    }
+
+    .track:hover {
+      background: rgba(255,255,255,0.03);
+      padding-left: 0.9rem;
+      border-left: 2px solid #ffffffaa;
+    }
+
+    .track-nr {
+      color: #8c8ea8;
+      min-width: 34px;
+      font-weight: 500;
+    }
+
+    .track-name {
+      word-break: break-word;
+    }
+
+    /* overlay layer */
+    .dark-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1050;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s;
+    }
+
+    .dark-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* mobile friendly */
+    @media (max-width: 660px) {
+      .drop-core {
+        padding: 1.8rem 1rem 1.5rem;
+      }
+      .timer-grid {
+        gap: 0.7rem;
+      }
+      .timer-cell {
+        min-width: 72px;
+        padding: 0.6rem 0rem;
+      }
+      .digit {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+      }
+      .unit-label {
+        font-size: 0.55rem;
+      }
+      .tracklist-trigger {
+        top: 1rem;
+        right: 1rem;
+        padding: 0.45rem 1.3rem;
+        font-size: 0.7rem;
+      }
+      .slide-panel {
+        max-width: 85%;
+      }
+      .presave-raw {
+        padding: 0.7rem 2rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .timer-cell {
+        min-width: 62px;
+      }
+      .digit {
+        font-size: 1.5rem;
+      }
+      .main-title {
+        font-size: 1.8rem;
+      }
+    }
+
+    /* extra futuristic but raw touches */
+    .glow-line {
+      width: 60px;
+      height: 1px;
+      background: rgba(255,255,255,0.2);
+      margin: 0.6rem auto 0;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>SWAGGER ALBUM DROPPING IN:</h1>
+<div class="dark-overlay" id="overlayGlobal"></div>
 
-    <div class="countdown">
-      <div class="time-box">
-        <div id="days" class="number">0</div>
-        <div class="label">DAYS</div>
-      </div>
-      <div class="time-box">
-        <div id="hours" class="number">0</div>
-        <div class="label">HOURS</div>
-      </div>
-      <div class="time-box">
-        <div id="minutes" class="number">0</div>
-        <div class="label">MINUTES</div>
-      </div>
-      <div class="time-box">
-        <div id="seconds" class="number">0</div>
-        <div class="label">SECONDS</div>
-      </div>
-    </div>
+<!-- slide-out tracklist panel -->
+<div class="slide-panel" id="tracklistSlide">
+  <div class="panel-head">
+    <h4>TRACKLIST</h4>
+    <button class="close-x" id="closeSlideBtn" aria-label="close panel">✕</button>
+  </div>
+  <ul class="tracklist-raw">
+    <li class="track"><span class="track-nr">01.</span><span class="track-name">SWAGGER (INTRO)</span></li>
+    <li class="track"><span class="track-nr">02.</span><span class="track-name">gd</span></li>
+    <li class="track"><span class="track-nr">03.</span><span class="track-name">took a trip</span></li>
+    <li class="track"><span class="track-nr">04.</span><span class="track-name">blood on my face</span></li>
+    <li class="track"><span class="track-nr">05.</span><span class="track-name">supreme w/ gjor</span></li>
+    <li class="track"><span class="track-nr">06.</span><span class="track-name">robot w/ LeoLegit & Plante06</span></li>
+    <li class="track"><span class="track-nr">07.</span><span class="track-name">w33d</span></li>
+    <li class="track"><span class="track-nr">08.</span><span class="track-name">again</span></li>
+    <li class="track"><span class="track-nr">09.</span><span class="track-name">PA1T7</span></li>
+    <li class="track"><span class="track-nr">10.</span><span class="track-name">1SEVEN7TEEN</span></li>
+  </ul>
+  <div style="margin-top: auto; text-align: left; font-size: 0.65rem; padding-top: 2rem; opacity: 0.3; letter-spacing: 1.5px;">BLADESWAGGER · XXVI</div>
+</div>
 
-    <h2>PRESAVE ALBUM:</h2>
-
-    <a class="button" href="https://distrokid.com/hyperfollow/bladeswagger/swagger-3" target="_blank">
-      PRESAVE NOW
-    </a>
+<!-- main countdown card -->
+<main class="drop-core">
+  <div class="raw-tag">BLADESWAGGER // DROP</div>
+  <div class="main-title">SWAGGER ALBUM</div>
+  <div class="main-title" style="font-size: clamp(1.6rem, 6vw, 2.2rem); background: none; -webkit-background-clip: unset; color: #c0c2dc; letter-spacing: 1px; margin-top: -8px;">DROPPING IN:</div>
+  
+  <div class="timezone-info">▼ YOUR LOCAL MIDNIGHT · 00:00 APRIL 17</div>
+  
+  <div class="timer-grid" id="countdownRoot">
+    <div class="timer-cell"><div class="digit" id="daysNum">00</div><div class="unit-label">DAYS</div></div>
+    <div class="timer-cell"><div class="digit" id="hoursNum">00</div><div class="unit-label">HOURS</div></div>
+    <div class="timer-cell"><div class="digit" id="minutesNum">00</div><div class="unit-label">MINUTES</div></div>
+    <div class="timer-cell"><div class="digit" id="secondsNum">00</div><div class="unit-label">SECONDS</div></div>
   </div>
 
-  <script>
-    // SET RELEASE DATE (April 17, 00:00)
-    const releaseDate = new Date("April 17, 2026 00:00:00").getTime();
+  <button class="presave-raw" id="presaveBtnAction">PRESAVE ALBUM</button>
+  
+  <div class="footer-signature">
+    <span>BLADESWAGGER</span>
+    <span>2026</span>
+  </div>
+  <div class="glow-line"></div>
+</main>
 
-    const countdown = setInterval(() => {
+<button class="tracklist-trigger" id="tracklistOpenBtn">TRACKLIST</button>
+
+<script>
+  (function() {
+    // TARGET: Friday April 17 at 00:00 in the USER'S LOCAL TIMEZONE
+    // Build date using local year, month (3 = April), day 17, midnight hour 0,0,0
+    function getLocalTarget() {
+      const now = new Date();
+      let year = now.getFullYear();
+      let target = new Date(year, 3, 17, 0, 0, 0, 0);
+      if (target <= now) {
+        // if this year's April 17 has passed, move to next year
+        target = new Date(year + 1, 3, 17, 0, 0, 0, 0);
+      }
+      return target;
+    }
+
+    let dropDate = getLocalTarget();
+    
+    const daysEl = document.getElementById('daysNum');
+    const hoursEl = document.getElementById('hoursNum');
+    const minutesEl = document.getElementById('minutesNum');
+    const secondsEl = document.getElementById('secondsNum');
+
+    function formatNumber(num) {
+      return num < 10 ? '0' + num : '' + num;
+    }
+
+    function refreshCountdown() {
       const now = new Date().getTime();
-      const distance = releaseDate - now;
-
+      const distance = dropDate.getTime() - now;
+      
+      if (distance <= 0) {
+        daysEl.innerText = '00';
+        hoursEl.innerText = '00';
+        minutesEl.innerText = '00';
+        secondsEl.innerText = '00';
+        return;
+      }
+      
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((distance / 1000 / 60) % 60);
-      const seconds = Math.floor((distance / 1000) % 60);
-
-      document.getElementById("days").innerText = days;
-      document.getElementById("hours").innerText = hours;
-      document.getElementById("minutes").innerText = minutes;
-      document.getElementById("seconds").innerText = seconds;
-
-      if (distance < 0) {
-        clearInterval(countdown);
-        document.querySelector(".countdown").innerHTML = "OUT NOW 🔥";
+      const hours = Math.floor((distance % (86400000)) / (3600000));
+      const minutes = Math.floor((distance % 3600000) / 60000);
+      const seconds = Math.floor((distance % 60000) / 1000);
+      
+      daysEl.innerText = formatNumber(days);
+      hoursEl.innerText = formatNumber(hours);
+      minutesEl.innerText = formatNumber(minutes);
+      secondsEl.innerText = formatNumber(seconds);
+    }
+    
+    refreshCountdown();
+    const timerInterval = setInterval(refreshCountdown, 1000);
+    
+    // Ensure if countdown hits zero we freeze visuals
+    const zeroCheck = setInterval(() => {
+      if (dropDate.getTime() - new Date().getTime() <= 0) {
+        daysEl.innerText = '00';
+        hoursEl.innerText = '00';
+        minutesEl.innerText = '00';
+        secondsEl.innerText = '00';
+        clearInterval(timerInterval);
+        clearInterval(zeroCheck);
       }
     }, 1000);
-  </script>
-
+    
+    // PRESAVE link
+    const presaveButton = document.getElementById('presaveBtnAction');
+    if (presaveButton) {
+      presaveButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open('https://distrokid.com/hyperfollow/bladeswagger/swagger-3', '_blank');
+      });
+    }
+    
+    // ---- TRACKLIST PANEL interactions ----
+    const panel = document.getElementById('tracklistSlide');
+    const openBtn = document.getElementById('tracklistOpenBtn');
+    const closeBtn = document.getElementById('closeSlideBtn');
+    const overlay = document.getElementById('overlayGlobal');
+    
+    function openPanel() {
+      panel.classList.add('open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closePanel() {
+      panel.classList.remove('open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    if (openBtn) openBtn.addEventListener('click', openPanel);
+    if (closeBtn) closeBtn.addEventListener('click', closePanel);
+    if (overlay) overlay.addEventListener('click', closePanel);
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && panel.classList.contains('open')) {
+        closePanel();
+      }
+    });
+    
+    // Edge: ensure that the page shows local midnight wording, no static misleading date
+    // Additional: add small dynamic update in case year edge (keeping date object consistent)
+    window.addEventListener('focus', () => {
+      // re-evaluate dropDate only if it's invalid? but no need, the original target stays consistent across session
+      // but if someone leaves page open across year boundary, they'd see zeros after drop date passes. That's fine.
+      // however to be extra safe: If current date > dropDate and difference positive weird? but zeros handle.
+    });
+    
+    // little additional detail: show "midnight your time" text is already prominent.
+    // make sure "BLADESWAGGER 2026" bottom appears exactly as requested
+    // also no AI-typical icons, raw typography.
+  })();
+</script>
 </body>
 </html>
+
+
